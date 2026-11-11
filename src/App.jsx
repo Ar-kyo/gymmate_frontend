@@ -892,11 +892,26 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.all([
-      api('/api/catalog').then(setCatalog).catch((error) => setCatalogError(error.message)),
-      api('/api/me').then((result) => setUser(result.user)).catch(() => {}),
-    ]).finally(() => setCatalogLoading(false));
-    setSessionReady(true);
+    let active = true;
+    api('/api/catalog')
+      .then((result) => { if (active) setCatalog(result); })
+      .catch((error) => { if (active) setCatalogError(error.message); })
+      .finally(() => { if (active) setCatalogLoading(false); });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    api('/api/me')
+      .then((result) => { if (active) setUser(result.user); })
+      .catch((error) => {
+        if (!active || error.status === 401) return;
+        setAppError(error.message);
+      })
+      .finally(() => {
+        if (active) setSessionReady(true);
+      });
+    return () => { active = false; };
   }, []);
 
   async function logout() {
@@ -914,6 +929,7 @@ export default function App() {
   function handleLogin(nextUser, emailSent) {
     setUser(nextUser);
     setWelcomeEmailSent(emailSent ?? null);
+    setAppError('');
   }
 
   if (!sessionReady) return null;

@@ -58,6 +58,10 @@ export async function api(path, { method = 'GET', data } = {}) {
 
   const response = await fetchApi(`${apiBase}${path}`, options);
   const result = await readJson(response);
-  if (!response.ok) throw new Error(result.error || `The request failed (HTTP ${response.status}).`);
+  if (!response.ok) {
+    const error = new Error(result.error || `The request failed (HTTP ${response.status}).`);
+    error.status = response.status;
+    throw error;
+  }
   return result;
 }
