@@ -6,7 +6,8 @@ async function fetchApi(url, options) {
     return await fetch(url, options);
   } catch (error) {
     if (error instanceof TypeError) {
-      throw new Error('Cannot reach the GymMate API. Check VITE_API_BASE_URL and make sure the backend allows this frontend origin in APP_FRONTEND_URL.');
+      const apiOrigin = apiBase || window.location.origin;
+      throw new Error(`The browser could not reach ${apiOrigin} from ${window.location.origin}. Check the backend CORS allowlist, HTTPS availability, and Render service status.`);
     }
     throw error;
   }
