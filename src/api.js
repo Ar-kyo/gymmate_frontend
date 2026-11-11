@@ -6,7 +6,7 @@ async function fetchApi(url, options) {
     return await fetch(url, options);
   } catch (error) {
     if (error instanceof TypeError) {
-      throw new Error('Cannot reach the GymMate backend. Start Laragon Apache and check LAVALUST_URL in frontend/.env.');
+      throw new Error('Cannot reach the GymMate API. Check VITE_API_BASE_URL and make sure the backend allows this frontend origin in APP_FRONTEND_URL.');
     }
     throw error;
   }
@@ -15,13 +15,13 @@ async function fetchApi(url, options) {
 async function readJson(response) {
   const text = await response.text();
   if (!text.trim()) {
-    throw new Error(`The backend returned an empty response (HTTP ${response.status}). Check Laragon's Apache/PHP error log.`);
+    throw new Error(`The backend returned an empty response (HTTP ${response.status}). Check the backend service logs.`);
   }
 
   try {
     return JSON.parse(text);
   } catch {
-    throw new Error(`The backend returned a non-JSON response (HTTP ${response.status}). Check Laragon's Apache/PHP error log.`);
+    throw new Error(`The backend returned a non-JSON response (HTTP ${response.status}). Check the backend service logs and database configuration.`);
   }
 }
 

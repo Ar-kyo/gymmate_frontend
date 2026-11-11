@@ -13,6 +13,12 @@ The React/Vite app is deliberately kept separate from LavaLust. LavaLust stays i
 
 Vite proxies `/api` requests to LavaLust. Form requests use LavaLust's CSRF cookie/token and session authentication.
 
+## Render deployment
+
+The production frontend build uses `https://gymmate-backend-wcwv.onrender.com` as its API base URL. If the backend URL changes, update `.env.production` or set `VITE_API_BASE_URL` in the Render frontend service and redeploy. On the backend Render service, set `APP_FRONTEND_URL=https://gymmate-frontend-vfen.onrender.com` exactly (no trailing slash) so credentialed API and CSRF requests from the frontend pass CORS checks.
+
+The backend health endpoint must report `status: ok` before the app can load database-backed pages. If it reports `database_unavailable`, verify the backend's database environment variables and provider TLS/CA configuration in Render, then redeploy or restart the backend. Do not put database credentials in frontend environment variables.
+
 The public API health check is available at `APP_URL` followed by `api/health` (by default, `http://localhost/gynmate/public/api/health`). It reports whether MySQL is reachable, whether required GymMate tables are installed, whether GCash checkout keys are configured, and whether SMTP settings are present; it never returns credentials.
 
 ## Sessions, check-in, and location
