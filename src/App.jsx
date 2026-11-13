@@ -278,13 +278,11 @@ function MemberPass() {
 
   useEffect(() => {
     refreshPass();
-    const timer = window.setInterval(refreshPass, 240000);
-    return () => window.clearInterval(timer);
   }, [refreshPass]);
 
   return <section className="dashboard-panel member-pass" id="member-pass">
-    <div className="panel-heading"><div><Eyebrow>GYM ENTRY</Eyebrow><h2>Your membership pass</h2></div><span className="panel-index">PRIVATE QR</span></div>
-    {pass ? <div className="pass-layout"><div className="pass-qr"><QRCodeSVG value={pass.token} size={208} level="M" includeMargin /></div><div><h3>{pass.membership.plan_name}</h3><p className="panel-copy">Show this QR to a GymMate trainer or administrator to check in. It refreshes automatically and expires soon; do not share screenshots.</p><small>Membership valid through {new Date(`${pass.membership.end_date}T00:00:00`).toLocaleDateString()}</small><p><button className="button button-outline button-small" type="button" onClick={refreshPass}>Refresh pass</button></p></div></div> : <p className={error && !loading ? 'panel-copy' : 'empty-state'}>{loading ? 'Loading your secure pass…' : error || 'Your membership pass is unavailable.'}</p>}
+    <div className="panel-heading"><div><Eyebrow>GYM ENTRY</Eyebrow><h2>Your membership pass</h2></div><span className="panel-index">UNIQUE QR</span></div>
+    {pass ? <div className="pass-layout"><div className="pass-qr"><QRCodeSVG value={pass.token} size={208} level="M" includeMargin /></div><div><h3>{pass.membership.plan_name}</h3><p className="panel-copy">This is your unique GymMate check-in QR. Show it to a GymMate trainer or administrator. It stays the same; your current membership is checked each time it is scanned. Avoid sharing screenshots.</p><small>Membership valid through {new Date(`${pass.membership.end_date}T00:00:00`).toLocaleDateString()}</small><p><button className="button button-outline button-small" type="button" onClick={refreshPass}>Reload pass</button></p></div></div> : <p className={error && !loading ? 'panel-copy' : 'empty-state'}>{loading ? 'Loading your secure pass…' : error || 'Your membership pass is unavailable.'}</p>}
   </section>;
 }
 
